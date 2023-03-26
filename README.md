@@ -56,12 +56,12 @@ cd tor/;
 podman build -t tornode .;
 chmod 777 ./data ./logs;
 
-# run
-podman run -d --read-only \
+# run (network host for easy port bind on ipv6)
+podman run -d --read-only --network host \
     -v "/home/user/torrc.conf:/torrc:rw,Z" \
     -v "/home/user/tor/logs:/var/log:Z,rw" \
     -v "/home/user/tor/data:/var/lib/tor:Z,rw" \
-    --name tornode -p 443:443 -p 9091:9091 tornode:latest
+    --name tornode tornode:latest
 
 # prepare systemd service for reboot persistence
 podman generate systemd --new --name tornode > /etc/systemd/system/tornode.service;
