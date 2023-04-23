@@ -1,6 +1,20 @@
 # Containers-Workspace
 Various useful and useless Dockerfiles, often experimental and work in progress
 
+## toolbox
+
+Fedora based container wih preinstalled many usefull tools for various debug and problem searching purposes
+run help-toolbox to show what can you do in there
+
+Typical container run options that allows for host data access:
+```bash
+podman run --rm -it --privileged \
+    --network host --pid host --ipc host --no-hosts --ulimit host \
+    --userns host \
+        --name toolbox toolbox
+```
+
+
 ## gui-container
 
 gui-container is an experiment for apps with GUI

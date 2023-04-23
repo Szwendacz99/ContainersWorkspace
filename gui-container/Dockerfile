@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:37
+FROM registry.fedoraproject.org/fedora:38
 
 ENV HISTSIZE=10000
 ENV HISTTIMEFORMAT="%d/%m/%y %T "

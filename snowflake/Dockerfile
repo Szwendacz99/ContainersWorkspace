@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:37
+FROM registry.fedoraproject.org/fedora:38
 
 RUN useradd -u 1423 -m -s '/bin/bash' -U snowflake
 ENV TZ=Europe/Warsaw

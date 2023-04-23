@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:37 as builder
+FROM registry.fedoraproject.org/fedora:38 as builder
 
 WORKDIR /
 
@@ -9,7 +9,7 @@ RUN dnf clean all && \
     cargo build --release
 
 
-FROM registry.fedoraproject.org/fedora-minimal:37
+FROM registry.fedoraproject.org/fedora-minimal:38
 WORKDIR /
 COPY --from=builder /rathole/target/release/rathole .
 USER 1852:1852
