@@ -1,10 +1,25 @@
 FROM registry.fedoraproject.org/fedora:38
 
 ENV PKGS_GENERAL="htop \
-    btop"
+    btop \
+    sysstat"
+
+ENV PKGS_PROCESSES="procps-ng \
+    strace"
+
+ENV PKGS_NETWORK="bind-utils \
+    nmap \
+    nmap-ncat \
+    telnet \
+    tcpdump \
+    iftop \
+    iproute \
+    iputils \
+    whois \
+    iptraf-ng"
 
 RUN dnf clean all && \
-    dnf install -y ${PKGS_GENERAL} && \
+    dnf install -y ${PKGS_GENERAL} ${PKGS_PROCESSES} ${PKGS_NETWORK} && \
     dnf -y autoremove && \
     dnf -y clean all
 
