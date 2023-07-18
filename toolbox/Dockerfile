@@ -2,7 +2,8 @@ FROM registry.fedoraproject.org/fedora:38
 
 ENV PKGS_GENERAL="htop \
     btop \
-    sysstat"
+    sysstat \
+    util-linux"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"

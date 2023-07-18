@@ -14,6 +14,17 @@ podman run --rm -it --privileged \
         --name toolbox toolbox
 ```
 
+## cloud-toolbox
+
+Sounds huge, but it is just set of tools for cloud-based stuff,
+like openstack-cli, rclone, openshift cli, etc...
+
+Also contains `fzf` and bash-completion. Mount your bash_history for
+best experience.
+
+```bash
+podman run --rm -it -v "$HOME/.bash_history:/root/.bash_history" cloud-toolbox:latest
+```
 
 ## gui-container
 
