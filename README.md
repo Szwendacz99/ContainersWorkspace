@@ -23,7 +23,10 @@ Also contains `fzf` and bash-completion. Mount your bash_history for
 best experience.
 
 ```bash
-podman run --rm -it -v "$HOME/.bash_history:/root/.bash_history" cloud-toolbox:latest
+podman run --rm -it \
+    -v "$HOME/.bash_history:/root/.bash_history" \
+    --security-opt label:disable \
+        cloud-toolbox:latest
 ```
 
 ## gui-container
