@@ -48,6 +48,16 @@ podman run --privileged -it \
         gui-container:latest
 ```
 
+Minimal(?)permissions example (for wayland)(you could also select single sockets from XDG_RUNTIME_DIR)
+```bash
+podman run -it --security-opt label:disable \
+    -e XDG_RUNTIME_DIR=/runtime_dir\
+    -e WAYLAND_DISPLAY="$WAYLAND_DISPLAY" \
+    -v "$XDG_RUNTIME_DIR:/runtime_dir:rw" \
+    --entrypoint bash --name "gui_container" \
+        gui-container:latest
+```
+
 starting dbus:
 
 ```bash
