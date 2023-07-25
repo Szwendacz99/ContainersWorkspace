@@ -64,6 +64,12 @@ starting dbus:
 export $(dbus-launch)
 ```
 
+allowing podman to connect to X display as "non-network local connections"
+
+```bash
+xhost +"local:podman@"
+```
+
 unsetting `WAYLAD_DISPLAY` or `DISPLAY` can force apps to use the other one
 
 ```bash
