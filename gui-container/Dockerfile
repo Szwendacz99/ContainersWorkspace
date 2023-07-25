@@ -14,7 +14,8 @@ ENV GENERAL_PKGS="\
     firefox \
     dbus \
     dbus-x11 \
-    strace"
+    strace \
+    systemd"
 
 # install system dependencies
 RUN dnf install -y \
@@ -23,4 +24,4 @@ RUN dnf install -y \
 
 RUN echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash' >> /root/.bashrc
 
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT [ "/sbin/init" ]
