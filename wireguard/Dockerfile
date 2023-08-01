@@ -17,6 +17,6 @@ RUN dnf install -y \
     chmod +x /usr/bin/entrypoint.sh && \
     mkdir /setup.d
 
-STOPSIGNAL SIGALRM
+STOPSIGNAL SIGINT
 
 ENTRYPOINT [ "/usr/bin/entrypoint.sh" ]
