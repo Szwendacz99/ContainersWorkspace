@@ -125,8 +125,21 @@ MASQUERADE required for accessing external networks is done by nftables, so
 it should work with nftables kernel modules, iptables-only modules can
 be missing.
 
+Before seting up the wg interface, entrypoint will execute files in
+`/setup.d/` if any.
+
+`PostUp` and `PostDown` in network interface config should look like this:
+
+```bash
+PostUp = nft add table inet filter; nft add chain inet filter forward { type filter hook forward priority 0 \; }; nft add rule inet filter forward iifname "%i" accept; nft add rule inet filter forward oifname "%i" accept; nft add table inet nat; nft add chain inet nat postrouting { type nat hook postrouting priority 100 \; }; nft add rule inet nat postrouting oifname "eth*" masquerade
+PostDown = nft delete table inet filter
+```
+
 Example run (requires root and privileged for nftables setup)
 
 ```bash
-podman run --privileged --name wireguard -d -v './:/data:ro' wireguard:latest
+podman run --privileged --name wireguard -d \
+    -v './config:/data:ro' \
+    -v './setup:/setup.d:ro' \
+    -wireguard:latest
 ```

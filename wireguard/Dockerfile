@@ -14,7 +14,8 @@ COPY entrypoint.sh /usr/bin/
 RUN dnf install -y \
     ${PKGS} \
     && dnf clean all &&\
-    chmod +x /usr/bin/entrypoint.sh
+    chmod +x /usr/bin/entrypoint.sh && \
+    mkdir /setup.d
 
 STOPSIGNAL SIGALRM
 
