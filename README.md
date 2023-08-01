@@ -116,3 +116,17 @@ systemctl enable --now tornode.service;
 # view nyx dashboard
 podman exec -it tornode nyx
 ```
+
+## Wireguard
+
+Simple container that will setup wireguard interface according to
+`/data/wg0.conf` and then replace process with pid 1 to `sleep infinity`.
+MASQUERADE required for accessing external networks is done by nftables, so
+it should work with nftables kernel modules, iptables-only modules can
+be missing.
+
+Example run (requires root and privileged for nftables setup)
+
+```bash
+podman run --privileged --name wireguard -d -v './:/data:ro' wireguard:latest
+```
