@@ -18,5 +18,5 @@ done
 
 wg-quick up /data/wg0.conf
 
-while true; do sleep 5; done
-
+sleep infinity &
+wait $!
