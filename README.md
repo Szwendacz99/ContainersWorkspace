@@ -48,12 +48,12 @@ podman run --privileged -it \
         gui-container:latest
 ```
 
-Minimal(?)permissions example (for wayland)(you could also select single sockets from XDG_RUNTIME_DIR)
+Minimal permissions example (for wayland).  Mounting just the display server socket, there will be no sound or anything else:
 ```bash
 podman run -it --security-opt label:disable \
     -e XDG_RUNTIME_DIR=/runtime_dir\
     -e WAYLAND_DISPLAY="$WAYLAND_DISPLAY" \
-    -v "$XDG_RUNTIME_DIR:/runtime_dir:rw" \
+    -v "$XDG_RUNTIME_DIR/wayland-0:/runtime_dir/wayland-0:rw" \
     --entrypoint bash --name "gui_container" \
         gui-container:latest
 ```
