@@ -1,7 +1,7 @@
 # Containers-Workspace
 Various useful and useless Dockerfiles, often experimental and work in progress
 
-## toolbox
+## system-toolbox
 
 Fedora based container wih preinstalled many usefull tools for various debug and problem searching purposes
 run help-toolbox to show what can you do in there
@@ -142,4 +142,32 @@ podman run --privileged --name wireguard -d \
     -v './config:/data:ro' \
     -v './setup:/setup.d:ro' \
     -wireguard:latest
+```
+
+## zabbix-agent
+
+Very simple alpine-based zabbix-agent image providing additioanl deps
+required for SMART monitoring.
+
+Setting up such contenerized agent in systemd based system:
+
+```bash
+systemctl stop zabbix-agent.service;
+podman rm -f zabbix-agent;
+rm -f /etc/systemd/system/zabbix-agent.service;
+
+podman run --restart no \
+  --network host --pid host --ipc host --no-hosts --ulimit host --userns host \
+  --privileged \
+  -v "/path/to/custom/config.conf:/etc/zabbix/zabbix_agent2.conf:ro" \
+  -v "/sys:/sys:ro" \
+  -v "/sys/fs/cgroup:/sys/fs/cgroup:ro" \
+  -v "/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw" \
+  --name zabbix-agent \
+  -d localhost/zabbix-agent;
+
+podman generate systemd --new --name zabbix-agent > /etc/systemd/system/zabbix-agent.service;
+restorecon -v /etc/systemd/system/zabbix-agent.service;
+systemctl daemon-reload;
+systemctl enable --now zabbix-agent.service;
 ```
