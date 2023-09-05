@@ -23,8 +23,8 @@ ENV APPS="\
     librewolf"
 
 # install dependencies and basic apps
-RUN dnf install -y 'dnf-command(config-manager)' \
-    dnf config-manager --add-repo https://rpm.librewolf.net/librewolf-repo.repo \
+RUN dnf install -y 'dnf-command(config-manager)' && \
+    dnf config-manager --add-repo https://rpm.librewolf.net/librewolf-repo.repo && \
     dnf install -y \
     ${GENERAL_PKGS} \
     ${APPS} \
