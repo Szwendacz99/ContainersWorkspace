@@ -19,10 +19,12 @@ ENV GENERAL_PKGS="\
 
 ENV APPS="\
     chromium \
-    firefox"
+    firefox \
+    librewolf"
 
-# install system dependencies
-RUN dnf install -y \
+# install dependencies and basic apps
+RUN dnf config-manager --add-repo https://rpm.librewolf.net/librewolf-repo.repo \
+    dnf install -y \
     ${GENERAL_PKGS} \
     ${APPS} \
     && dnf clean all
