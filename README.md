@@ -131,9 +131,10 @@ Before seting up the wg interface, entrypoint will execute files in
 `PostUp` and `PostDown` in network interface config should look like this:
 
 ```bash
-PostUp = nft add table inet filter; nft add chain inet filter forward { type filter hook forward priority 0 \; }; nft add rule inet filter forward iifname "%i" accept; nft add rule inet filter forward oifname "%i" accept; nft add table inet nat; nft add chain inet nat postrouting { type nat hook postrouting priority 100 \; }; nft add rule inet nat postrouting oifname "eth*" masquerade
-PostDown = nft delete table inet filter
+PostUp = nft add table inet filter; nft add chain inet filter forward { type filter hook forward priority 0 \; }; nft add rule inet filter forward iifname "%i" accept; nft add rule inet filter forward oifname "%i" accept; nft add table inet nat; nft add chain inet nat postrouting { type nat hook postrouting priority 100 \; }; nft insert rule inet nat postrouting tcp flags syn / syn,rst counter tcp option maxseg size set rt mtu; nft add rule inet nat postrouting oifname "eth*" masquerade
+PostDown = nft delete table inet filter; nft delete table inet nat;
 ```
+The `nft insert rule inet nat postrouting tcp flags syn / syn,rst counter tcp option maxseg size set rt mtu` is optional, but recommended if on client side there are virtual networks from which discovering the MTU of whole path can be difficult.
 
 Example run (requires root and privileged for nftables setup)
 
