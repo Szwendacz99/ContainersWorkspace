@@ -11,7 +11,7 @@ ENV PKGS_TEMP="python3-devel gcc wget"
 
 RUN dnf clean all && \
     dnf install -y ${PKGS_BASE} ${PKGS_TEMP} && \
-    pip3 install python-openstackclient python-swiftclient && \
+    pip3 install python-openstackclient python-swiftclient python-heatclient && \
     wget https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
     tar -xvf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
     chmod +x openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/* && \
