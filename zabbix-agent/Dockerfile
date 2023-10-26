@@ -3,6 +3,7 @@ FROM docker.io/alpine:latest
 RUN apk add smartmontools util-linux zabbix-agent2 zabbix-utils sudo fping && \
     echo 'zabbix ALL=(ALL) NOPASSWD:/usr/sbin/smartctl' >> /etc/sudoers
 
-USER zabbix
+# USER zabbix
+USER root
 
 ENTRYPOINT [ "/usr/sbin/zabbix_agent2", "-f" ]
