@@ -3,7 +3,9 @@ FROM registry.fedoraproject.org/fedora:38
 ENV PKGS_GENERAL="htop \
     btop \
     sysstat \
-    util-linux"
+    util-linux \
+    lm_sensors \
+    smartmontools"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"

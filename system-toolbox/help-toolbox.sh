@@ -57,3 +57,6 @@ echo "iftop - monitor network traffic per hosts"
 echo 
 printTitle "Memory"
 printTitle "Storage"
+echo "smartctl - check smart disks interfaces"
+printTitle "Hardware"
+echo "sensors - check temperatures"
