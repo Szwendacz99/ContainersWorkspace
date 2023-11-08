@@ -5,7 +5,9 @@ ENV PKGS_GENERAL="htop \
     sysstat \
     util-linux \
     lm_sensors \
-    smartmontools"
+    smartmontools \
+    ffmpeg-free \
+    yt-dlp"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"
