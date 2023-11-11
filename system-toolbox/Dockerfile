@@ -8,7 +8,9 @@ ENV PKGS_GENERAL="htop \
     smartmontools \
     ffmpeg-free \
     yt-dlp \
-    openfortivpn"
+    openfortivpn \
+    conntrack-tools \
+    wireguard-tools"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"
