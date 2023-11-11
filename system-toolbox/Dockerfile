@@ -7,7 +7,8 @@ ENV PKGS_GENERAL="htop \
     lm_sensors \
     smartmontools \
     ffmpeg-free \
-    yt-dlp"
+    yt-dlp \
+    openfortivpn"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"
