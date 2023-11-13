@@ -19,13 +19,22 @@ jobs:
         run: | 
           podman build ./system-toolbox --tag system-toolbox:latest
           podman build ./cloud-toolbox --tag cloud-toolbox:latest
+          podman build ./tor --tag tor:latest
+          podman build ./wireguard --tag wireguard:latest
+          podman build ./zabbix-agent --tag zabbix-agent:latest
       - name: login to registry
         run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
       - name: Push image
         run: |
           # tagging
-          podman tag system-toolbox:latest gitea.maciej.cloud/packages/system-toolbox:latest 
-          podman tag cloud-toolbox:latest gitea.maciej.cloud/packages/cloud-toolbox:latest 
+          podman tag system-toolbox:latest gitea.maciej.cloud/packages/system-toolbox:latest
+          podman tag cloud-toolbox:latest gitea.maciej.cloud/packages/cloud-toolbox:latest
+          podman tag tor:latest gitea.maciej.cloud/packages/tor:latest
+          podman tag wireguard:latest gitea.maciej.cloud/packages/wireguard:latest
+          podman tag zabbix-agent:latest gitea.maciej.cloud/packages/zabbix-agent:latest
           # pushing
           podman push gitea.maciej.cloud/packages/system-toolbox:latest
           podman push gitea.maciej.cloud/packages/cloud-toolbox:latest
+          podman push gitea.maciej.cloud/packages/tor:latest
+          podman push gitea.maciej.cloud/packages/wireguard:latest
+          podman push gitea.maciej.cloud/packages/zabbix-agent:latest
