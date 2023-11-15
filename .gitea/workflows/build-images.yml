@@ -1,0 +1,66 @@
+name: Build images
+run-name: Build images
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    - cron: '30 5 */5 * *'
+
+jobs:
+  build-images-arm64:
+    runs-on: [ linux_arm64 ]
+    steps:
+      - name: install actions deps
+        run: | 
+          dnf install -y nodejs git
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: login to registry
+        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
+      - name: Build selected images
+        run: | 
+          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent);
+          for image in "${IMAGES[@]}";
+          do
+            echo "building image $image";
+            podman build ./$image --tag gitea.maciej.cloud/packages/$image:arm64;
+            echo "pushing image $image";
+            podman push gitea.maciej.cloud/packages/$image:arm64;
+          done
+  build-images-amd64:
+    runs-on: [ linux_amd64 ]
+    steps:
+      - name: install actions deps
+        run: | 
+          dnf install -y nodejs git
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: login to registry
+        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
+      - name: Build selected images
+        run: | 
+          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent);
+          for image in "${IMAGES[@]}";
+          do
+            echo "building image $image";
+            podman build ./$image --tag gitea.maciej.cloud/packages/$image:amd64;
+            echo "pushing image $image";
+            podman push gitea.maciej.cloud/packages/$image:amd64;
+          done
+  update-images-manifests:
+    runs-on: [ linux_amd64 ]
+    needs: 
+      - build-images-amd64
+      - build-images-arm64
+    steps:
+      - name: login to registry
+        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
+      - name: Create manifests and push
+        run: | 
+          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent);
+          for image in "${IMAGES[@]}";
+          do
+            echo "Updating manifest for $image";
+            podman manifest create gitea.maciej.cloud/packages/$image:latest gitea.maciej.cloud/packages/$image:amd64 gitea.maciej.cloud/packages/$image:arm64;
+            podman manifest push gitea.maciej.cloud/packages/$image:latest gitea.maciej.cloud/packages/$image:latest;
+          done

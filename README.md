@@ -153,10 +153,6 @@ required for SMART monitoring.
 Setting up such contenerized agent in systemd based system:
 
 ```bash
-systemctl stop zabbix-agent.service;
-podman rm -f zabbix-agent;
-rm -f /etc/systemd/system/zabbix-agent.service;
-
 podman run --restart no \
   --network host --pid host --ipc host --no-hosts --ulimit host --userns host \
   --privileged \
@@ -172,3 +168,88 @@ restorecon -v /etc/systemd/system/zabbix-agent.service;
 systemctl daemon-reload;
 systemctl enable --now zabbix-agent.service;
 ```
+
+## gitea-runner
+
+An image for running double-container setup - one with podman system service,
+and the other with gitea act_runner which will use podman service as
+docker runner.
+
+Example uses root, but it should be very similar to setup under non-root user.
+
+Build image setting proper platform architecture `amd64`, `arm64`, etc...
+```bash
+podman build --no-cache -t gitea-runner \
+    --build-arg ARCH="arm64" \
+        ./ContainersWorkspace/gitea-runner/
+```
+
+
+Create dirs for runner config, and for podman socket shared between containers.
+```bash
+mkdir -p /root/act-runner/{runner,podman}
+```
+
+Generate example config
+```bash
+podman run --rm -it  gitea-runner:latest generate-config > /root/act-runner/runner/config.yaml
+```
+
+Update registration file path in config and privileged mode.
+```bash
+sed -i 's`file: .runner`file: /etc/runner/registration.json`g' /root/act-runner/runner/config.yaml;
+sed -i 's`privileged: false`privileged: true`g' act-runner/runner/config.yaml;
+sed -i 's`docker_host: ""`docker_host: "-"`g' act-runner/runner/config.yaml;
+```
+Currently you **need** to set `docker_host: "-"` in "container" section
+to make this setup with mounted docker.sock work.
+
+Fix perms on those dirs:
+```bash
+podman run --rm -it \
+    -v /root/act-runner/:/data \
+    --privileged \
+    --entrypoint bash \
+        gitea-runner:latest \
+            -c "chown -R podman /data"
+```
+
+Register runner.  
+example value for labels can be `ubuntu-latest:docker://quay.io/podman/stable`.
+```bash
+podman run --rm -it \
+    -v /root/act-runner/runner/:/etc/runner \
+    --privileged  \
+        gitea-runner:latest \
+            --config /etc/runner/config.yaml register
+```
+
+Start container acting as podman/docker (use `--init` to get rid of zombies):
+```bash
+podman run --rm -d --privileged --name gitea-podman \
+    --init \
+    --entrypoint podman \
+    -v /root/act-runner/podman:/podman \
+        gitea-runner:latest  \
+            system service --time=0 unix:///podman/docker.sock
+```
+
+Now start container with runner (it will fail if docker.sock is missing)
+```bash
+podman run --rm -d --name gitea-runner \
+    -v /root/act-runner/runner/:/etc/runner:ro,Z \
+    -v /root/act-runner/podman/docker.sock:/var/run/docker.sock:rw,z \
+        gitea-runner:latest \
+            daemon -c /etc/runner/config.yaml
+```
+
+Now generate systemd services for these containers
+```bash
+podman generate systemd --new --name gitea-podman > /etc/systemd/system/gitea-podman.service;
+podman generate systemd --new --name gitea-runner > /etc/systemd/system/gitea-runner.service;
+restorecon -v /etc/systemd/system/gitea-podman.service;
+restorecon -v /etc/systemd/system/gitea-runner.service;
+systemctl daemon-reload;
+systemctl enable --now gitea-podman.service;
+systemctl enable --now gitea-runner.service;
+````
