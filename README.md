@@ -177,7 +177,7 @@ docker runner.
 
 Example uses root, but it should be very similar to setup under non-root user.
 
-Build image setting proper platform architecture `amd64`, `arm64`, etc...
+Build image (will compile from main branch)
 ```bash
 podman build --no-cache -t gitea-runner \
     --build-arg ARCH="arm64" \
@@ -234,11 +234,11 @@ podman run --rm -d --privileged --name gitea-podman \
             system service --time=0 unix:///podman/docker.sock
 ```
 
-Now start container with runner (it will fail if docker.sock is missing)
+Now start container with runner
 ```bash
 podman run --rm -d --name gitea-runner \
     -v /root/act-runner/runner/:/etc/runner:ro,Z \
-    -v /root/act-runner/podman/docker.sock:/var/run/docker.sock:rw,z \
+    -v /root/act-runner/podman:/podman:rw,z \
         gitea-runner:latest \
             daemon -c /etc/runner/config.yaml
 ```

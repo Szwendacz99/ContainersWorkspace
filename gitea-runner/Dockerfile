@@ -1,12 +1,20 @@
 FROM quay.io/podman/stable
 
-ENV VERSION="0.2.6"
-ARG ARCH="amd64"
+RUN mkdir -p /opt /var/run && \
+    ln -sf /podman/docker.sock /var/run/docker.sock
 
-RUN curl -o /act_runner https://gitea.com/gitea/act_runner/releases/download/v0.2.6/act_runner-${VERSION}-linux-${ARCH} && \
-    chmod +x /act_runner && \
-    chown podman /act_runner
+RUN dnf install -y make go git && \
+    cd /tmp && \
+    git clone https://gitea.com/gitea/act_runner.git && \
+    cd act_runner && \
+    make build && \
+    mv /tmp/act_runner/act_runner /opt/ && \
+    chown podman /opt/act_runner && \
+    dnf remove -y make go git && \
+    dnf autoremove -y && \
+    dnf clean all && \
+    rm -rf /tmp/* /root/go
 
 USER podman
 
-ENTRYPOINT [ "/act_runner" ]
+ENTRYPOINT [ "/opt/act_runner" ]
