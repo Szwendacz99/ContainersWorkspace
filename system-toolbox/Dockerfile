@@ -10,7 +10,8 @@ ENV PKGS_GENERAL="htop \
     yt-dlp \
     openfortivpn \
     conntrack-tools \
-    wireguard-tools"
+    wireguard-tools \
+    qrencode"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"
