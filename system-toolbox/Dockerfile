@@ -10,8 +10,7 @@ ENV PKGS_GENERAL="htop \
     yt-dlp \
     openfortivpn \
     conntrack-tools \
-    wireguard-tools \
-    qrencode"
+    wireguard-tools"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"
@@ -25,7 +24,8 @@ ENV PKGS_NETWORK="bind-utils \
     iproute \
     iputils \
     whois \
-    iptraf-ng"
+    iptraf-ng \
+    mtr"
 
 RUN dnf clean all && \
     dnf install -y ${PKGS_GENERAL} ${PKGS_PROCESSES} ${PKGS_NETWORK} && \

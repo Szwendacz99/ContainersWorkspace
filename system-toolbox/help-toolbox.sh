@@ -54,7 +54,7 @@ echo "nmap - advanced network scanning"
 echo "telnet - open interactive tcp connection"
 echo "tcpdump - monitor network packets"
 echo "iftop - monitor network traffic per hosts"
-echo 
+echo "mtr - advanced network path tracking"
 printTitle "Memory"
 printTitle "Storage"
 echo "smartctl - check smart disks interfaces"
