@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:38
+FROM registry.fedoraproject.org/fedora:rawhide
 
 RUN dnf clean all && \
     dnf install -y tor nyx util-linux && \
