@@ -19,7 +19,7 @@ jobs:
         run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
       - name: Build selected images
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent snowflake);
+          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent snowflake gitea-runner);
           for image in "${IMAGES[@]}";
           do
             echo "building image $image";
@@ -39,7 +39,7 @@ jobs:
         run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
       - name: Build selected images
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent snowflake);
+          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent snowflake gitea-runner);
           for image in "${IMAGES[@]}";
           do
             echo "building image $image";
@@ -57,7 +57,7 @@ jobs:
         run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
       - name: Create manifests and push
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent snowflake);
+          IMAGES=(system-toolbox cloud-toolbox tor wireguard zabbix-agent snowflake gitea-runner);
           for image in "${IMAGES[@]}";
           do
             echo "Updating manifest for $image";

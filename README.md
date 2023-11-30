@@ -180,7 +180,6 @@ Example uses root, but it should be very similar to setup under non-root user.
 Build image (will compile from main branch)
 ```bash
 podman build --no-cache -t gitea-runner \
-    --build-arg ARCH="arm64" \
         ./ContainersWorkspace/gitea-runner/
 ```
 
@@ -198,8 +197,8 @@ podman run --rm -it  gitea-runner:latest generate-config > /root/act-runner/runn
 Update registration file path in config and privileged mode.
 ```bash
 sed -i 's`file: .runner`file: /etc/runner/registration.json`g' /root/act-runner/runner/config.yaml;
-sed -i 's`privileged: false`privileged: true`g' act-runner/runner/config.yaml;
-sed -i 's`docker_host: ""`docker_host: "-"`g' act-runner/runner/config.yaml;
+sed -i 's`privileged: false`privileged: true`g' /root/act-runner/runner/config.yaml;
+sed -i 's`docker_host: ""`docker_host: "-"`g' /root/act-runner/runner/config.yaml;
 ```
 Currently you **need** to set `docker_host: "-"` in "container" section
 to make this setup with mounted docker.sock work.
@@ -207,9 +206,10 @@ to make this setup with mounted docker.sock work.
 Fix perms on those dirs:
 ```bash
 podman run --rm -it \
-    -v /root/act-runner/:/data \
+    -v /root/act-runner/:/data:z,rw \
     --privileged \
     --entrypoint bash \
+    -u root \
         gitea-runner:latest \
             -c "chown -R podman /data"
 ```
@@ -218,7 +218,7 @@ Register runner.
 example value for labels can be `ubuntu-latest:docker://quay.io/podman/stable`.
 ```bash
 podman run --rm -it \
-    -v /root/act-runner/runner/:/etc/runner \
+    -v /root/act-runner/runner/:/etc/runner:z,rw \
     --privileged  \
         gitea-runner:latest \
             --config /etc/runner/config.yaml register
@@ -229,7 +229,7 @@ Start container acting as podman/docker (use `--init` to get rid of zombies):
 podman run --rm -d --privileged --name gitea-podman \
     --init \
     --entrypoint podman \
-    -v /root/act-runner/podman:/podman \
+    -v /root/act-runner/podman:/podman:z,rw \
         gitea-runner:latest  \
             system service --time=0 unix:///podman/docker.sock
 ```
@@ -237,7 +237,7 @@ podman run --rm -d --privileged --name gitea-podman \
 Now start container with runner
 ```bash
 podman run --rm -d --name gitea-runner \
-    -v /root/act-runner/runner/:/etc/runner:ro,Z \
+    -v /root/act-runner/runner/:/etc/runner:rw,Z \
     -v /root/act-runner/podman:/podman:rw,z \
         gitea-runner:latest \
             daemon -c /etc/runner/config.yaml
