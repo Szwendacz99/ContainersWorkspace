@@ -252,4 +252,100 @@ restorecon -v /etc/systemd/system/gitea-runner.service;
 systemctl daemon-reload;
 systemctl enable --now gitea-podman.service;
 systemctl enable --now gitea-runner.service;
-````
+```
+
+## Podman quadlets examples
+
+This section is about quadlets, rather than specific image, but it is based on
+examples.
+
+To enable such container managed by systemd, create `.container` file
+at `/etc/containers/systemd/my-container.container`, and then run:
+```bash
+systemctl daemon-reload;
+systemctl enable --now my-container.service
+```
+
+### Example host-monitoring purpose quadlets
+
+#### zabbix-agent
+
+```systemd
+[Unit]
+Description=Zabbix agent 2
+After=local-fs.target
+
+[Container]
+Image=zabbix-agent
+ContainerName=zabbix-agent
+LogDriver=journald
+Network=host
+Pull=newer
+ReadOnly=yes
+VolatileTmp=true
+SecurityLabelDisable=yes
+UserNS=host
+Ulimit=host
+Unmask=ALL
+
+AutoUpdate=registry
+
+PodmanArgs=--pid=host
+PodmanArgs=--ipc=host
+PodmanArgs=--no-hosts
+
+Volume=/etc/zabbix/agent2.conf:/etc/zabbix/zabbix_agent2.conf:ro
+Volume=/sys:/sys:ro
+Volume=/dev:/dev:ro
+Volume=/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+[Service]
+Restart=always
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
+```
+
+#### node-exporter (Prometheus)
+
+```systemd
+[Unit]
+Description=Node exporter for Prometheus
+After=local-fs.target
+
+[Container]
+Image=docker.io/prom/node-exporter:latest
+ContainerName=node-exporter
+LogDriver=journald
+Network=host
+Pull=newer
+ReadOnly=yes
+VolatileTmp=true
+SecurityLabelDisable=yes
+User=1222
+UserNS=host
+Ulimit=host
+Unmask=ALL
+
+AutoUpdate=registry
+
+# Exec=--help
+
+PodmanArgs=--pid=host
+PodmanArgs=--ipc=host
+PodmanArgs=--no-hosts
+
+Volume=/proc:/host/proc:ro
+Volume=/sys:/host/sys:ro
+Volume=/:/rootfs:ro
+
+Exec=--path.procfs=/host/proc --path.rootfs=/rootfs --path.sysfs=/host/sys --collector.filesystem.mount-points-exclude='^/(sys|proc|dev|host|etc)($$|/)'
+
+[Service]
+Restart=always
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
+```
