@@ -6,7 +6,7 @@ ENV HISTSIZE=10000
 ENV HISTTIMEFORMAT="%d/%m/%y %T "
 ENV HISTFILESIZE=20000
 
-ENV PKGS_BASE="fzf git python3-pip rclone bash-completion"
+ENV PKGS_BASE="fzf git python3-pip rclone bash-completion kubernetes-client"
 ENV PKGS_TEMP="python3-devel gcc wget"
 
 RUN dnf clean all && \

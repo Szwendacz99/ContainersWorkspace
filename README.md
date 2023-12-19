@@ -284,18 +284,19 @@ Pull=newer
 ReadOnly=yes
 VolatileTmp=true
 SecurityLabelDisable=yes
-UserNS=host
 Ulimit=host
 Unmask=ALL
+AddCapability=SYS_ADMIN
+AddCapability=SYS_RAWIO
 
 AutoUpdate=registry
 
 PodmanArgs=--pid=host
 PodmanArgs=--ipc=host
 PodmanArgs=--no-hosts
+PodmanArgs=--device-cgroup-rule='a *:* r'
 
-Volume=/etc/zabbix/agent2.conf:/etc/zabbix/zabbix_agent2.conf:ro
-Volume=/sys:/sys:ro
+Volume=/etc/zabbix-agent2.conf:/etc/zabbix/zabbix_agent.conf:ro
 Volume=/dev:/dev:ro
 Volume=/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
 
@@ -303,7 +304,6 @@ Volume=/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
 Restart=always
 
 [Install]
-# Start by default on boot
 WantedBy=multi-user.target default.target
 ```
 
