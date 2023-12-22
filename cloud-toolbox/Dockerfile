@@ -24,7 +24,11 @@ RUN dnf clean all && \
 
 WORKDIR /data
 
+COPY kube_ps.sh /root/kube_ps.sh
 
-RUN echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash' >> /root/.bashrc
+RUN echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash;\
+source /root/kube_ps.sh;\
+PS1=\'[cloud-toolbox \W/ $(kube_ps1)]\$ \'\
+' >> /root/.bashrc
 
 ENTRYPOINT [ "/bin/bash" ]
