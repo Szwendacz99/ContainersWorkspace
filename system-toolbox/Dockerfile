@@ -1,5 +1,13 @@
 FROM registry.fedoraproject.org/fedora:39
 
+USER root
+
+ENV HISTSIZE=10000
+ENV HISTTIMEFORMAT="%d/%m/%y %T "
+ENV HISTFILESIZE=20000
+
+ENV PKGS_BASE="fzf bash-completion"
+
 ENV PKGS_GENERAL="htop \
     btop \
     sysstat \
@@ -28,12 +36,15 @@ ENV PKGS_NETWORK="bind-utils \
     mtr"
 
 RUN dnf clean all && \
-    dnf install -y ${PKGS_GENERAL} ${PKGS_PROCESSES} ${PKGS_NETWORK} && \
+    dnf install -y ${PKGS_BASE} ${PKGS_GENERAL} ${PKGS_PROCESSES} ${PKGS_NETWORK} && \
     dnf -y autoremove && \
     dnf -y clean all
 
 COPY help-toolbox.sh /usr/bin/help-toolbox
 
-RUN chmod 555 /usr/bin/help-toolbox
+RUN chmod 555 /usr/bin/help-toolbox && \
+    echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash;\
+PS1=\'[system-toolbox \W/]\$ \'\
+' >> /root/.bashrc
 
 USER root
