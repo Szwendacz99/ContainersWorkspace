@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-images-arm64:
-    runs-on: [ linux_arm64 ]
+    runs-on: [ arm64 ]
     steps:
       - name: install actions deps
         run: | 
@@ -16,19 +16,19 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: login to registry
-        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
+        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" forgejo.maciej.cloud
       - name: Build selected images
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake gitea-runner);
+          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake);
           for image in "${IMAGES[@]}";
           do
             echo "building image $image";
-            podman build ./$image --tag gitea.maciej.cloud/packages/$image:arm64;
+            podman build ./$image --tag forgejo.maciej.cloud/pkg/$image:arm64;
             echo "pushing image $image";
-            podman push gitea.maciej.cloud/packages/$image:arm64;
+            podman push forgejo.maciej.cloud/pkg/$image:arm64;
           done
   build-images-amd64:
-    runs-on: [ linux_amd64 ]
+    runs-on: [ amd64 ]
     steps:
       - name: install actions deps
         run: | 
@@ -36,31 +36,31 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: login to registry
-        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
+        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" forgejo.maciej.cloud
       - name: Build selected images
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake gitea-runner);
+          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake);
           for image in "${IMAGES[@]}";
           do
             echo "building image $image";
-            podman build ./$image --tag gitea.maciej.cloud/packages/$image:amd64;
+            podman build ./$image --tag forgejo.maciej.cloud/pkg/$image:amd64;
             echo "pushing image $image";
-            podman push gitea.maciej.cloud/packages/$image:amd64;
+            podman push forgejo.maciej.cloud/pkg/$image:amd64;
           done
   update-images-manifests:
-    runs-on: [ linux_amd64 ]
+    runs-on: [ amd64 ]
     needs: 
       - build-images-amd64
       - build-images-arm64
     steps:
       - name: login to registry
-        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" gitea.maciej.cloud
+        run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" forgejo.maciej.cloud
       - name: Create manifests and push
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake gitea-runner);
+          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake);
           for image in "${IMAGES[@]}";
           do
             echo "Updating manifest for $image";
-            podman manifest create gitea.maciej.cloud/packages/$image:latest gitea.maciej.cloud/packages/$image:amd64 gitea.maciej.cloud/packages/$image:arm64;
-            podman manifest push gitea.maciej.cloud/packages/$image:latest gitea.maciej.cloud/packages/$image:latest;
+            podman manifest create forgejo.maciej.cloud/pkg/$image:latest forgejo.maciej.cloud/pkg/$image:amd64 forgejo.maciej.cloud/pkg/$image:arm64;
+            podman manifest push forgejo.maciej.cloud/pkg/$image:latest forgejo.maciej.cloud/pkg/$image:latest;
           done
