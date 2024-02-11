@@ -18,7 +18,9 @@ ENV PKGS_GENERAL="htop \
     yt-dlp \
     openfortivpn \
     conntrack-tools \
-    wireguard-tools"
+    wireguard-tools \
+    iotop \
+    rsync"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"
