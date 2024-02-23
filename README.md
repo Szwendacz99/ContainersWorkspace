@@ -195,6 +195,7 @@ podman run --rm -it  gitea-runner:latest generate-config > /root/act-runner/runn
 ```
 
 Update registration file path in config and privileged mode.
+
 ```bash
 sed -i 's`file: .runner`file: /etc/runner/registration.json`g' /root/act-runner/runner/config.yaml;
 sed -i 's`privileged: false`privileged: true`g' /root/act-runner/runner/config.yaml;
@@ -204,6 +205,7 @@ Currently you **need** to set `docker_host: "-"` in "container" section
 to make this setup with mounted docker.sock work.
 
 Fix perms on those dirs:
+
 ```bash
 podman run --rm -it \
     -v /root/act-runner/:/data:z,rw \
@@ -216,6 +218,7 @@ podman run --rm -it \
 
 Register runner.  
 example value for labels can be `ubuntu-latest:docker://quay.io/podman/stable`.
+
 ```bash
 podman run --rm -it \
     -v /root/act-runner/runner/:/etc/runner:z,rw \
@@ -225,6 +228,7 @@ podman run --rm -it \
 ```
 
 Start container acting as podman/docker (use `--init` to get rid of zombies):
+
 ```bash
 podman run --rm -d --privileged --name gitea-podman \
     --init \
@@ -235,6 +239,7 @@ podman run --rm -d --privileged --name gitea-podman \
 ```
 
 Now start container with runner
+
 ```bash
 podman run --rm -d --name gitea-runner \
     -v /root/act-runner/runner/:/etc/runner:rw,Z \
@@ -244,6 +249,7 @@ podman run --rm -d --name gitea-runner \
 ```
 
 Now generate systemd services for these containers
+
 ```bash
 podman generate systemd --new --name gitea-podman > /etc/systemd/system/gitea-podman.service;
 podman generate systemd --new --name gitea-runner > /etc/systemd/system/gitea-runner.service;
