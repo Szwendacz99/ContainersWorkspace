@@ -6,8 +6,8 @@ ENV HISTSIZE=10000
 ENV HISTTIMEFORMAT="%d/%m/%y %T "
 ENV HISTFILESIZE=20000
 
-#temporarily download this way, since helm in fedora repo is broken
-ENV HELM_VERSION="3.14.0" 
+# for helm install script
+ENV VERIFY_CHECKSUM="false" 
 
 ENV PKGS_BASE="fzf git python3-pip rclone rsync bash-completion kubernetes-client golang-sigs-k8s-kustomize"
 ENV PKGS_TEMP="python3-devel gcc wget"
@@ -20,7 +20,7 @@ RUN dnf clean all && \
     chmod +x openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/* && \
     mv openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc /usr/bin/ && \
     rm -rf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit* && \
-    curl -L https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/bin/ && chmod +x /usr/bin/helm && \
+    curl -o /dev/stdout https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash - && \
     dnf remove -y ${PKGS_TEMP} && \
     dnf -y autoremove && \
     dnf -y clean all && \
