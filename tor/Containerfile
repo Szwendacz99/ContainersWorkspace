@@ -1,8 +1,7 @@
-FROM registry.fedoraproject.org/fedora:rawhide
+FROM registry.fedoraproject.org/fedora-minimal:rawhide
 
-RUN dnf clean all && \
-    dnf install -y tor nyx util-linux && \
-    dnf clean all
+RUN dnf5 install -y tor nyx util-linux && \
+    dnf5 clean all
 
 COPY torrc.conf /torrc
 
