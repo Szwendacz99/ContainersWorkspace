@@ -46,7 +46,7 @@ COPY help-toolbox.sh /usr/bin/help-toolbox
 
 RUN chmod 555 /usr/bin/help-toolbox && \
     echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash;\
-source /etc/profile.d/bash_completion.sh\
+source /etc/profile.d/bash_completion.sh;\
 PS1=\'[system-toolbox \W/]\$ \'\
 ' >> /root/.bashrc
 

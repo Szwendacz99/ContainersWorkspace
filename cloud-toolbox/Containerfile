@@ -26,7 +26,7 @@ COPY kube_ps.sh /root/kube_ps.sh
 
 RUN echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash;\
 source /root/kube_ps.sh;\
-source /etc/profile.d/bash_completion.sh\
+source /etc/profile.d/bash_completion.sh;\
 PS1=\'[cloud-toolbox \W/ $(kube_ps1)]\$ \'\
 ' >> /root/.bashrc
 
