@@ -3,7 +3,7 @@ FROM registry.fedoraproject.org/fedora-minimal:39
 ENV VIRTUAL_ENV=/venv
 ENV PATH=/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-ENV PKGS_DNF="python nodejs latex xelatex"
+ENV PKGS_DNF="python nodejs latex xelatex tini"
 ENV PKGS_DNF_BUILD="cargo python3-devel"
 
 ENV PKGS_PIP="jupyter \
@@ -44,6 +44,6 @@ RUN dnf5 install -y ${PKGS_DNF} ${PKGS_DNF_BUILD} && \
 
 WORKDIR /jupyter
 
-ENTRYPOINT [ "jupyter" ]
+ENTRYPOINT [ "tini" ]
 
-CMD [ "notebook", "--allow-root", "--no-browser", "--autoreload", "--ip", "0.0.0.0" ]
+CMD [ "jupyter", "--", "notebook", "--allow-root", "--no-browser", "--autoreload", "--ip", "0.0.0.0" ]
