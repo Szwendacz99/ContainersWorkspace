@@ -1,6 +1,26 @@
 # Containers-Workspace
 Various useful and useless Dockerfiles, often experimental and work in progress
 
+## jupyter
+
+This is a custom image with jupyterlab and notebook installed.
+
+Jupyter is running under root, for better possibilities of integration with
+hardware (gpu, etc..) and for easier additional resources management
+(dnf5 install, etc...)
+
+There is also lsp environment prepared, with various lsp servers.
+
+```bash
+podman run --rm -it \
+    -e JUPYTER_TOKEN=my-secret-token \
+    -v /some/path/conf:/root/.jupyter:z,rw \
+    -v /some/path/data:/jupyter/data:z,rw \
+    --name jupyter \
+        jupyter:latest
+```
+
+
 ## system-toolbox
 
 Fedora based container wih preinstalled many usefull tools for various debug and problem searching purposes

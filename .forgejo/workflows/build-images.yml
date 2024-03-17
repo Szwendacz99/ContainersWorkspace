@@ -6,6 +6,8 @@ on:
   schedule:
     - cron: '30 5 */10 * *'
 
+env:
+  IMAGES: system-toolbox cloud-toolbox tor zabbix-agent snowflake jupyter
 jobs:
   build-images-arm64:
     runs-on: [ arm64 ]
@@ -19,8 +21,7 @@ jobs:
         run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" forgejo.maciej.cloud
       - name: Build selected images
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake);
-          for image in "${IMAGES[@]}";
+          for image in ${IMAGES};
           do
             echo "building image $image";
             podman build ./$image --tag forgejo.maciej.cloud/pkg/$image:arm64;
@@ -39,8 +40,7 @@ jobs:
         run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" forgejo.maciej.cloud
       - name: Build selected images
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake);
-          for image in "${IMAGES[@]}";
+          for image in ${IMAGES};
           do
             echo "building image $image";
             podman build ./$image --tag forgejo.maciej.cloud/pkg/$image:amd64;
@@ -57,8 +57,7 @@ jobs:
         run: podman login -u "${{ secrets.PACKAGES_USERNAME }}" -p "${{ secrets.PACKAGES_PASSWD }}" forgejo.maciej.cloud
       - name: Create manifests and push
         run: | 
-          IMAGES=(system-toolbox cloud-toolbox tor zabbix-agent snowflake);
-          for image in "${IMAGES[@]}";
+          for image in ${IMAGES};
           do
             echo "Updating manifest for $image";
             podman manifest create forgejo.maciej.cloud/pkg/$image:latest forgejo.maciej.cloud/pkg/$image:amd64 forgejo.maciej.cloud/pkg/$image:arm64;

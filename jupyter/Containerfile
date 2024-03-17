@@ -1,0 +1,49 @@
+FROM registry.fedoraproject.org/fedora-minimal:39
+
+ENV VIRTUAL_ENV=/venv
+ENV PATH=/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+ENV PKGS_DNF="python nodejs latex xelatex"
+ENV PKGS_DNF_BUILD="cargo python3-devel"
+
+ENV PKGS_PIP="jupyter \
+    bash_kernel \
+    mariadb_kernel \
+    jedi-language-server \
+    jupyterlab-lsp \
+    python-lsp-server[all] \
+    JLDracula \
+    "
+ENV PKGS_NPM="bash-language-server \
+    dockerfile-language-server-nodejs \
+    pyright \
+    sql-language-server \
+    typescript-language-server \
+    unified-language-server \
+    vscode-css-languageserver-bin \
+    vscode-html-languageserver-bin \
+    vscode-json-languageserver-bin \
+    yaml-language-server"
+
+RUN dnf5 install -y ${PKGS_DNF} ${PKGS_DNF_BUILD} && \
+    mkdir /jupyter && \
+    cd /jupyter && \
+    npm install ${PKGS_NPM} && \
+    python3 -m venv /venv && \
+    pip install -U pip && \
+    pip install ${PKGS_PIP} && \
+    python -m bash_kernel.install && \
+    python -m mariadb_kernel.install && \
+    cargo install --git https://github.com/latex-lsp/texlab --locked && \
+    mv /root/.cargo/bin/texlab /usr/bin/ && \
+    rpm -e --nodeps systemd && \
+    rm -rf /root/.cache/* /root/.cargo && \
+    dnf5 remove -y ${PKGS_DNF_BUILD} && \
+    dnf5 autoremove -y && \
+    dnf5 clean all
+
+WORKDIR /jupyter
+
+ENTRYPOINT [ "jupyter" ]
+
+CMD [ "notebook", "--allow-root", "--no-browser", "--autoreload", "--ip", "0.0.0.0" ]
