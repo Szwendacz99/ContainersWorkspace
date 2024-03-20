@@ -13,6 +13,7 @@ ENV PKGS_PIP="jupyter \
     jupyterlab-lsp \
     python-lsp-server[all] \
     JLDracula \
+    jupyterlab-vim \
     "
 ENV PKGS_NPM="bash-language-server \
     dockerfile-language-server-nodejs \
