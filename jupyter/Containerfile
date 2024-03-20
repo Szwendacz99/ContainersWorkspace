@@ -47,4 +47,4 @@ WORKDIR /jupyter
 
 ENTRYPOINT [ "tini" ]
 
-CMD [ "jupyter", "--", "notebook", "--allow-root", "--no-browser", "--autoreload", "--ip", "0.0.0.0" ]
+CMD [ "jupyter", "--", "lab", "--allow-root", "--no-browser", "--autoreload" ]
