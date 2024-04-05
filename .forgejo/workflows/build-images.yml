@@ -24,7 +24,7 @@ jobs:
           for image in ${IMAGES};
           do
             echo "building image $image";
-            podman build ./$image --tag forgejo.maciej.cloud/pkg/$image:arm64;
+            podman build --ulimit nofile=10240:10240 ./$image --tag forgejo.maciej.cloud/pkg/$image:arm64;
             echo "pushing image $image";
             podman push forgejo.maciej.cloud/pkg/$image:arm64;
           done
@@ -43,7 +43,7 @@ jobs:
           for image in ${IMAGES};
           do
             echo "building image $image";
-            podman build ./$image --tag forgejo.maciej.cloud/pkg/$image:amd64;
+            podman build --ulimit nofile=10240:10240 ./$image --tag forgejo.maciej.cloud/pkg/$image:amd64;
             echo "pushing image $image";
             podman push forgejo.maciej.cloud/pkg/$image:amd64;
           done

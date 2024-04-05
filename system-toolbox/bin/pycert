@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+import argparse
+import socket
+import ssl
+from cryptography import x509
+
+parser = argparse.ArgumentParser(description='Show ssl certificate info')
+parser.add_argument(type=str,
+                    dest='host',
+                    help='Address on which ssl cert is served.')
+parser.add_argument('-H',
+                    '--hostname',
+                    type=str,
+                    required=False,
+                    default=None,
+                    dest='hostname',
+                    help='Hostname to be used in ssl context.')
+
+args = parser.parse_args()
+
+address: list[str] = args.host.split(':')
+HOST: str = address[0]
+HOSTNAME: str
+if args.hostname:
+    HOSTNAME = args.hostname
+else:
+    HOSTNAME = HOST
+
+PORT: int
+if len(address) > 1:
+    PORT = int(address[1])
+else:
+    PORT = 443
+
+context: ssl.SSLContext = ssl.create_default_context()
+context.check_hostname = False
+context.verify_mode = ssl.CERT_NONE
+
+conn: ssl.SSLSocket
+with context.wrap_socket(socket.socket(socket.AF_INET),
+                         server_hostname=HOSTNAME,
+                         do_handshake_on_connect=True) as conn:
+
+    conn.settimeout(5.0)
+    conn.connect((HOST, PORT))
+    cert_pem = ssl.DER_cert_to_PEM_cert(conn.getpeercert(binary_form=True))
+    cert: x509.Certificate = x509.load_pem_x509_certificate(cert_pem.encode())
+
+    key: x509.Extension
+    san = ""
+    for key in cert.extensions:
+        if key.oid._name == 'subjectAltName':
+            san = f"subjectAltName: {key.value}"
+
+    print(f"""
+Issuer: {cert.issuer}
+Subject: {cert.subject}
+{san}
+Not valid before: {cert.not_valid_before}
+Not valid after: {cert.not_valid_after}
+Public key type: {cert.public_key().__class__.__name__}
+Public key size: {cert.public_key().key_size}
+Version: {cert.version}
+Serial number: {cert.serial_number}
+Signature algorithm: {cert.signature_algorithm_oid._name}
+Signature hash: {cert.signature_hash_algorithm.name}
+""")
+
+    key: x509.Extension
+    for key in cert.extensions:
+        print(f'{key.oid._name}: {key.value}')
+
+    print(f"""
+SSL connection context info:
+    SSL/TLS version: {conn.version()}
+    Ciphers: {conn.cipher()}
+    Hostname: {conn.server_hostname}
+""")
+
+    print(f"""PEM cert:
+    {cert_pem}
+    """)
