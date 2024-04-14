@@ -12,7 +12,7 @@ ENV PKGS_PIP="jupyter \
     jedi-language-server \
     jupyterlab-lsp \
     python-lsp-server[all] \
-    JLDracula \
+    jupyterthemes \
     jupyterlab-vim \
     "
 ENV PKGS_NPM="bash-language-server \
@@ -33,6 +33,7 @@ RUN dnf5 install -y ${PKGS_DNF} ${PKGS_DNF_BUILD} && \
     python3 -m venv /venv && \
     pip install -U pip && \
     pip install ${PKGS_PIP} && \
+    jt -t monokai -f firacode && \
     python -m bash_kernel.install && \
     python -m mariadb_kernel.install && \
     cargo install --git https://github.com/latex-lsp/texlab --locked && \
