@@ -4,7 +4,7 @@ USER root
 
 ENV HISTSIZE=10000
 ENV HISTTIMEFORMAT="%d/%m/%y %T "
-ENV HISTFILESIZE=20000
+ENV HISTFILESIZE=200000
 
 ENV PKGS_BASE="fzf bash-completion python3-cryptography"
 

@@ -6,6 +6,10 @@ ENV PATH=/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV PKGS_DNF="python nodejs latex xelatex tini"
 ENV PKGS_DNF_BUILD="cargo python3-devel"
 
+ENV HISTSIZE=10000
+ENV HISTTIMEFORMAT="%d/%m/%y %T "
+ENV HISTFILESIZE=200000
+
 ENV PKGS_PIP="jupyter \
     bash_kernel \
     mariadb_kernel \
