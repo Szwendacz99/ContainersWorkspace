@@ -9,7 +9,7 @@ ENV HISTFILESIZE=100000
 # for helm install script
 ENV VERIFY_CHECKSUM="false" 
 
-ENV PKGS_BASE="fzf git python3-pip rclone rsync bash-completion kubernetes-client golang-sigs-k8s-kustomize"
+ENV PKGS_BASE="fzf git python3-pip rclone rsync bash-completion kubernetes-client"
 ENV PKGS_TEMP="python3-devel gcc wget tar"
 
 RUN dnf5 install -y ${PKGS_BASE} ${PKGS_TEMP} && \
