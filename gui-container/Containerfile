@@ -1,13 +1,8 @@
-FROM registry.fedoraproject.org/fedora-minimal
+FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 
-ENV HISTSIZE=10000
-ENV HISTTIMEFORMAT="%d/%m/%y %T "
-ENV HISTFILESIZE=100000
 ENV QT_QPA_PLATFORM=wayland
 
 ENV GENERAL_PKGS="\
-    bash-completion \
-    procps \
     iproute \
     fzf \
     wget \
@@ -26,7 +21,5 @@ RUN dnf5 install -y \
     ${GENERAL_PKGS} \
     ${APPS} \
     && dnf5 clean all
-
-RUN echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash' >> /root/.bashrc
 
 ENTRYPOINT [ "/sbin/init" ]

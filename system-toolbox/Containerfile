@@ -1,12 +1,6 @@
-FROM registry.fedoraproject.org/fedora-minimal
+FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 
-USER root
-
-ENV HISTSIZE=10000
-ENV HISTTIMEFORMAT="%d/%m/%y %T "
-ENV HISTFILESIZE=100000
-
-ENV PKGS_BASE="fzf bash-completion python3-cryptography"
+ENV PKGS_BASE="python3-cryptography"
 
 ENV PKGS_GENERAL="htop \
     btop \
@@ -37,17 +31,11 @@ ENV PKGS_NETWORK="bind-utils \
     iptraf-ng \
     mtr"
 
+COPY help-toolbox.sh /usr/bin/help-toolbox
+
 RUN dnf5 install -y ${PKGS_BASE} ${PKGS_GENERAL} ${PKGS_PROCESSES} ${PKGS_NETWORK} && \
+    chmod 555 /usr/bin/help-toolbox && \
     dnf5 -y autoremove && \
     dnf5 -y clean all
 
-COPY help-toolbox.sh /usr/bin/help-toolbox
 COPY ./bin /usr/local/bin
-
-RUN chmod 555 /usr/bin/help-toolbox && \
-    echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash;\
-source /etc/profile.d/bash_completion.sh;\
-PS1=\'[system-toolbox \W/]\$ \'\
-' >> /root/.bashrc
-
-USER root

@@ -1,15 +1,9 @@
-FROM registry.fedoraproject.org/fedora-minimal
-
-USER root
-
-ENV HISTSIZE=10000
-ENV HISTTIMEFORMAT="%d/%m/%y %T "
-ENV HISTFILESIZE=100000
+FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 
 # for helm install script
 ENV VERIFY_CHECKSUM="false" 
 
-ENV PKGS_BASE="fzf git python3-pip rclone rsync bash-completion kubernetes-client"
+ENV PKGS_BASE="git python3-pip rclone rsync kubernetes-client"
 ENV PKGS_TEMP="python3-devel gcc wget tar"
 
 RUN dnf5 install -y ${PKGS_BASE} ${PKGS_TEMP} && \

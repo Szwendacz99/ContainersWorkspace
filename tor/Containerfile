@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal
+FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 
 RUN dnf5 install -y tor nyx util-linux && \
     dnf5 clean all
