@@ -1,3 +1,7 @@
+FROM ghcr.io/helmfile/helmfile:canary as helmfile
+
+# ----
+
 FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 
 # for helm install script
@@ -5,6 +9,8 @@ ENV VERIFY_CHECKSUM="false"
 
 ENV PKGS_BASE="git python3-pip rclone rsync kubernetes-client"
 ENV PKGS_TEMP="python3-devel gcc wget tar"
+
+COPY --from=helmfile /usr/local/bin/helmfile /usr/local/bin/helmfile
 
 RUN dnf5 install -y ${PKGS_BASE} ${PKGS_TEMP} && \
     pip3 install python-openstackclient python-swiftclient python-heatclient python-designateclient && \
@@ -15,13 +21,5 @@ RUN dnf5 install -y ${PKGS_BASE} ${PKGS_TEMP} && \
     mkdir /data
 
 WORKDIR /data
-
-COPY kube_ps.sh /root/kube_ps.sh
-
-RUN echo $'[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash;\
-source /root/kube_ps.sh;\
-source /etc/profile.d/bash_completion.sh;\
-PS1=\'[cloud-toolbox \W/ $(kube_ps1)]\$ \'\
-' >> /root/.bashrc
 
 ENTRYPOINT [ "/bin/bash" ]
