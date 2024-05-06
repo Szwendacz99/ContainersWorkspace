@@ -14,7 +14,8 @@ ENV PKGS_GENERAL="htop \
     conntrack-tools \
     wireguard-tools \
     iotop \
-    rsync"
+    rsync \
+    compsize"
 
 ENV PKGS_PROCESSES="procps-ng \
     strace"
