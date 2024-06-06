@@ -10,7 +10,9 @@ ENV GENERAL_PKGS="\
     dbus \
     dbus-x11 \
     strace \
-    systemd"
+    systemd \
+    NetworkManager \
+    "
 
 ENV APPS="\
     chromium \
