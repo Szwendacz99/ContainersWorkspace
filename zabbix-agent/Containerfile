@@ -1,6 +1,6 @@
 FROM docker.io/alpine:edge
 
-RUN apk add smartmontools util-linux zabbix-agent2 zabbix-utils sudo && \
+RUN apk add smartmontools util-linux zabbix-agent2 zabbix-utils sudo nftables && \
     echo 'zabbix ALL=(ALL) NOPASSWD:/usr/sbin/smartctl' >> /etc/sudoers
 
 # USER zabbix
