@@ -1,0 +1,11 @@
+FROM registry.fedoraproject.org/fedora-minimal:40
+
+RUN dnf5 install -y openssh-clients bash-completion fzf && \
+    dnf5 autoremove -y && \
+    dnf5 clean all
+
+COPY bashrc.sh /root/.bashrc
+
+WORKDIR /root
+
+ENTRYPOINT ["/bin/bash", "-c", "echo \"$(ssh-agent -s)\" >/root/ssh_agent_eval && exec bash"]
