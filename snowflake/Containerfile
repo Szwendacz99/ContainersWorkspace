@@ -1,7 +1,8 @@
 FROM registry.fedoraproject.org/fedora-minimal
 
 ENV TZ=Europe/Warsaw
-RUN dnf5 install -y shadow-utils git golang && \
+# install also tor, for geoip data
+RUN dnf5 install -y shadow-utils git golang tor && \
     useradd -u 1423 -m -s '/bin/bash' -U snowflake && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     git clone https://git.torproject.org/pluggable-transports/snowflake.git && \
