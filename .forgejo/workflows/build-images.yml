@@ -7,7 +7,7 @@ on:
     - cron: '30 5 */10 * *'
 
 env:
-  IMAGES: system-toolbox cloud-toolbox tor zabbix-agent snowflake gui-container
+  IMAGES: system-toolbox cloud-toolbox tor snowflake gui-container
 jobs:
   build-images-arm64:
     runs-on: [ arm64 ]
