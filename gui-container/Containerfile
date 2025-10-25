@@ -13,7 +13,7 @@ ENV GENERAL_PKGS="\
     strace \
     systemd \
     NetworkManager \
-    gstreamer1-plugins-bad-free-libs
+    gstreamer1-plugins-bad-free-libs \
     "
 
 ENV APPS="\
