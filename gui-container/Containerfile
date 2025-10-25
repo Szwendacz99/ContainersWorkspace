@@ -2,6 +2,7 @@ FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 
 ENV QT_QPA_PLATFORM=wayland
 
+# gstreamer1-plugins-bad-free-libs is for servo
 ENV GENERAL_PKGS="\
     iproute \
     fzf \
@@ -12,6 +13,7 @@ ENV GENERAL_PKGS="\
     strace \
     systemd \
     NetworkManager \
+    gstreamer1-plugins-bad-free-libs
     "
 
 ENV APPS="\
@@ -22,6 +24,10 @@ ENV APPS="\
 RUN dnf5 install -y \
     ${GENERAL_PKGS} \
     ${APPS} \
-    && dnf5 clean all
+    && dnf5 clean all && \
+    wget https://download.servo.org/nightly/linux/servo-x86_64-linux-gnu.tar.gz && \
+    tar -xf servo-x86_64-linux-gnu.tar.gz && \
+    cp -r ./servo/* /usr/local/bin/ && \
+    rm -f servo-x86_64-linux-gnu.tar.gz
 
 ENTRYPOINT [ "/sbin/init" ]
