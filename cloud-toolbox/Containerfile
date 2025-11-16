@@ -7,8 +7,8 @@ FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 # for helm install script
 ENV VERIFY_CHECKSUM="false" 
 
-ENV PKGS_BASE="git python3-pip rclone rsync kubernetes-client"
-ENV PKGS_TEMP="python3-devel gcc wget tar"
+ENV PKGS_BASE="git python3-pip rclone rsync kubernetes-client wget"
+ENV PKGS_TEMP="python3-devel gcc tar"
 
 COPY --from=helmfile /usr/local/bin/helmfile /usr/local/bin/helmfile
 
