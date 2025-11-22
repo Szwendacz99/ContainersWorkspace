@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   schedule:
     - cron: '30 5 */10 * *'
+enable-email-notifications: true
 
 env:
   IMAGES: system-toolbox cloud-toolbox tor snowflake gui-container
