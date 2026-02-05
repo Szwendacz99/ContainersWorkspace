@@ -8,7 +8,7 @@ FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 ENV VERIFY_CHECKSUM="false" 
 
 ENV PKGS_BASE="git python3-pip rclone rsync kubernetes-client wget"
-ENV PKGS_TEMP="python3-devel gcc tar"
+ENV PKGS_TEMP="python3-devel gcc tar gzip"
 
 COPY --from=helmfile /usr/local/bin/helmfile /usr/local/bin/helmfile
 
