@@ -8,7 +8,6 @@ RUN dnf5 install -y shadow-utils git golang tor && \
     git clone https://git.torproject.org/pluggable-transports/snowflake.git && \
     cd snowflake/proxy && \
     go build && \
-    rpm -e --nodeps systemd && \
     dnf5 remove -y golang git shadow-utils && \
     dnf5 -y autoremove && \
     dnf5 -y clean all && \
