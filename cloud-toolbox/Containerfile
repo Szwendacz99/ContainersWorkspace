@@ -15,6 +15,7 @@ COPY --from=helmfile /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN dnf5 install -y ${PKGS_BASE} ${PKGS_TEMP} && \
     pip3 install python-openstackclient python-swiftclient python-heatclient python-designateclient && \
     curl -o /dev/stdout https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash - && \
+    (rpm --nodeps -e systemd || true) && \
     dnf5 remove -y ${PKGS_TEMP} && \
     dnf5 -y autoremove && \
     dnf5 -y clean all && \
