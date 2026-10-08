@@ -1,7 +1,63 @@
+# Stage 1: Build stage
+FROM forgejo.maciej.cloud/pkg/mc-fedora-base AS builder
+
+# Install build toolchain, autotools, git, and header dependencies
+RUN dnf install -y \
+    git \
+    autoconf \
+    automake \
+    libtool \
+    gcc \
+    make \
+    pkgconfig \
+    libevent-devel \
+    openssl-devel \
+    zlib-devel \
+    libcap-devel \
+    openssl-devel-engine \
+    libzstd-devel \
+    xz-devel && \
+    dnf clean all
+
+# High-optimization compiler flags (-O3, Link-Time Optimization, and security hardening)
+ENV CFLAGS="-O3 -flto -pipe -fstack-protector-strong -D_FORTIFY_SOURCE=2" \
+    CXXFLAGS="-O3 -flto -pipe -fstack-protector-strong -D_FORTIFY_SOURCE=2 -w" \
+    LDFLAGS="-Wl,-O1 -Wl,--as-needed -Wl,-z,relro -Wl,-z,now"
+
+WORKDIR /build
+
+# Clone main branch and bootstrap build system with autogen.sh
+RUN git clone --depth 1 https://gitlab.torproject.org/tpo/core/tor.git . && \
+    ./autogen.sh && \
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --disable-dependency-tracking \
+        --enable-zstd \
+        --disable-asciidoc \
+        --disable-html-manual \
+        --enable-silent-rules \
+        --enable-lzma && \
+    make -j$(nproc) && \
+    make install DESTDIR=/tmp/tor-dist
+
+# Stage 2: Final runtime stage
 FROM forgejo.maciej.cloud/pkg/mc-fedora-base
 
-RUN dnf5 install -y tor nyx util-linux && \
-    dnf5 clean all
+# Install runtime tools (nyx, util-linux) and dynamic libraries needed by Tor
+RUN dnf install -y \
+    nyx \
+    util-linux && \
+    dnf clean all
+
+# Ensure toranon user and group exist in the final image
+RUN groupadd -r toranon 2>/dev/null || true && \
+    useradd -r -g toranon -s /sbin/nologin -d /var/lib/tor toranon 2>/dev/null || true
+
+# Copy compiled Tor binary and geoip/data files from builder stage
+COPY --from=builder /tmp/tor-dist/usr/bin/tor /usr/bin/tor
+COPY --from=builder /tmp/tor-dist/usr/share/tor /usr/share/tor
 
 COPY torrc.conf /torrc
 
