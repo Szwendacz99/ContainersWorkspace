@@ -14,7 +14,7 @@ RUN dnf install -y \
     openssl-devel \
     zlib-devel \
     libcap-devel \
-    openssl-devel-engine \
+    openssl-devel \
     libzstd-devel \
     xz-devel && \
     dnf clean all
